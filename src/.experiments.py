@@ -1,6 +1,12 @@
+import time
+
+import gym
+import matplotlib.pyplot as plt
 from keras.layers import Conv2D, MaxPooling2D, Flatten
 from keras.layers import Dropout
 from keras.models import Sequential
+
+from src.helpers import rgb2gray
 
 input_shape = [3000, 1]
 n_classes = 5
@@ -21,5 +27,24 @@ def cnn3dilated(input_shape):
     print(model.output_shape)
 
 
+def gray_scale():
+    env = gym.make('Seaquest-v0')
+    for i_episode in range(20):
+        observation = env.reset()
+        for t in range(200):
+            env.render()
+            action = 8
+            observation, reward, done, info = env.step(action)
+            gray = rgb2gray(observation)
+            plt.imshow(gray, cmap=plt.get_cmap('gray'), vmin=0, vmax=256)
+            time.sleep(0.15)
+            print(gray[50])
+            if done:
+                print("Episode finished after {} timesteps".format(t + 1))
+                break
+            plt.show()
+    env.close()
 
-cnn3dilated([256, 256, 1])
+
+if __name__ == '__main__':
+    cnn3dilated([256, 256, 1])
