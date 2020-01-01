@@ -11,7 +11,7 @@ class DQNAgent:
     def __init__(self, state_size, action_size):
         self.state_size = state_size  # no. inputs
         self.action_size = action_size  # no. outputs
-        self.memory = deque(maxlen=2000)  # memory
+        self.memory = deque(maxlen=2000)  # decision register
         self.gamma = 0.95  # discount rate
         self.epsilon = 1.0  # exploration rate
         # TODO add decay rate
@@ -37,6 +37,16 @@ class DQNAgent:
             return random.randrange(self.action_size)
         act_values = self.model.predict(state)
         return np.argmax(act_values[0])  # returns action
+
+    def replay(self, batch_size):
+        batch = random.sample(self.memory, batch_size)
+        for state, action, reward, next_state, done in batch:
+            target = reward
+            if not done:
+                target += self.gamma * np.amax(self.model.predict(next_state)[0])
+            target_f = self.model.predict(state)
+            target_f[0][action] = target
+            self.model.fit(state, target_f)  # verbose=0
 
     def load(self, name):
         self.model.load_weights(name)
