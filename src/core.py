@@ -2,7 +2,7 @@ import random
 from collections import deque
 
 import numpy as np
-from keras.layers import Dense, Conv2D
+from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten
 from keras.models import Sequential
 from keras.optimizers import Adam
 
@@ -20,11 +20,22 @@ class DQNAgent:
 
     def _build_model(self):
         # Neural Net for Deep-Q learning Model
-        model = Sequential()
-        model.add(Conv2D(input_shape=self.state_size, ))
+        model = Sequential(name='Questor1.0')
+        model.add(Conv2D(kernel_size=5, filters=32, input_shape=self.state_size, activation='relu'))
+        model.add(MaxPooling2D(pool_size=2))
+
+        model.add(Conv2D(kernel_size=3, filters=32, activation='relu'))
+        model.add(MaxPooling2D(pool_size=2))
+
+        model.add(Conv2D(kernel_size=3, filters=32, activation='relu'))
+        model.add(MaxPooling2D(pool_size=2))
+
+        model.add(Dropout(0.2))
+        model.add(Flatten())
+
         model.add(Dense(24, input_dim=self.state_size, activation='relu'))
         model.add(Dense(24, activation='relu'))
-        model.add(Dense(self.action_size, activation='linear'))
+        model.add(Dense(self.action_size, activation='softmax'))
         model.compile(loss='mse',
                       optimizer=Adam(lr=self.learning_rate))
         return model
@@ -43,7 +54,8 @@ class DQNAgent:
         for state, action, reward, next_state, done in batch:
             target = reward
             if not done:
-                target += self.gamma * np.amax(self.model.predict(next_state)[0])
+                a = self.model.predict(next_state)
+                target += self.gamma * np.amax(a[0])
             target_f = self.model.predict(state)
             target_f[0][action] = target
             self.model.fit(state, target_f)  # verbose=0
