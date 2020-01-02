@@ -1,12 +1,7 @@
 import gym
-import numpy as np
 
+from helpers import rgb2gray
 from src.core import DQNAgent
-
-
-def rgb2gray(rgb):
-    return np.dot(rgb, [0.2989, 0.5870, 0.1140])
-
 
 EPISODES = 1000
 
@@ -28,8 +23,10 @@ if __name__ == "__main__":
             action = agent.act(state)
             next_state, reward, done, _ = env.step(action)
             reward = reward if not done else -10
-            next_state = rgb2gray(next_state)
-            agent.memorize(state, action, reward, next_state, done)
+
+            next_state = rgb2gray(next_state)  # Converting RGB state to gray-scale
+
+            agent.memorize(state, action, reward, next_state, done)  # Remember
             state = next_state
             if done:
                 print("episode: {}/{}, score: {}, e: {:.2}"

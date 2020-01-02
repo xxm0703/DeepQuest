@@ -6,10 +6,12 @@ from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten
 from keras.models import Sequential
 from keras.optimizers import Adam
 
+from helpers import encapsulator
+
 
 class DQNAgent:
     def __init__(self, state_size, action_size):
-        self.state_size = state_size  # no. inputs
+        self.state_size = state_size[:2] + (1,)  # no. inputs + 1-channel color
         self.action_size = action_size  # no. outputs
         self.memory = deque(maxlen=2000)  # decision register
         self.gamma = 0.95  # discount rate
@@ -46,16 +48,21 @@ class DQNAgent:
     def act(self, state):
         if np.random.rand() <= self.epsilon:
             return random.randrange(self.action_size)
+        state = encapsulator(state)
         act_values = self.model.predict(state)
         return np.argmax(act_values[0])  # returns action
 
     def replay(self, batch_size):
         batch = random.sample(self.memory, batch_size)
+
         for state, action, reward, next_state, done in batch:
             target = reward
             if not done:
+                next_state = encapsulator(next_state)
                 a = self.model.predict(next_state)
                 target += self.gamma * np.amax(a[0])
+
+            state = encapsulator(state)
             target_f = self.model.predict(state)
             target_f[0][action] = target
             self.model.fit(state, target_f)  # verbose=0

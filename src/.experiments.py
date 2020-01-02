@@ -8,13 +8,14 @@ from keras.models import Sequential
 
 from src.helpers import rgb2gray
 
-input_shape = [3000, 1]
-n_classes = 5
-
 
 def cnn3dilated(input_shape):
     model = Sequential(name='cnn3adam')
     model.add(Conv2D(kernel_size=5, filters=32, input_shape=input_shape, activation='relu'))
+    model.add(MaxPooling2D(pool_size=2))
+    print(model.output_shape)
+
+    model.add(Conv2D(kernel_size=3, filters=32, activation='relu'))
     model.add(MaxPooling2D(pool_size=2))
     print(model.output_shape)
 
@@ -46,5 +47,12 @@ def gray_scale():
     env.close()
 
 
+def dimentions():
+    env = gym.make('Seaquest-v0')
+    print(f"Input dim: {env.action_space.n}")
+    print(f"Output dim: {env.observation_space.shape}")
+
+
 if __name__ == '__main__':
-    cnn3dilated([256, 256, 1])
+    dimentions()
+    cnn3dilated((210, 160, 1))
