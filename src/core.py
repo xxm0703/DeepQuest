@@ -15,8 +15,9 @@ class DQNAgent:
         self.action_size = action_size  # no. outputs
         self.memory = deque(maxlen=2000)  # decision register
         self.gamma = 0.95  # discount rate
-        self.epsilon = 1.0  # exploration rate
-        # TODO add decay rate
+        self.epsilon = 1  # exploration rate
+        self.epsilon_decay = 5e-5
+        self.epsilon_min = 0.02
         self.learning_rate = 0.001
         self.model = self._build_model()
 
@@ -47,6 +48,8 @@ class DQNAgent:
 
     def act(self, state):
         if np.random.rand() <= self.epsilon:
+            if self.epsilon > self.epsilon_min:
+                self.epsilon -= self.epsilon_decay
             return random.randrange(self.action_size)
         state = encapsulator(state)
         act_values = self.model.predict(state)
@@ -65,7 +68,7 @@ class DQNAgent:
             state = encapsulator(state)
             target_f = self.model.predict(state)
             target_f[0][action] = target
-            self.model.fit(state, target_f)  # verbose=0
+            self.model.fit(state, target_f, verbose=False)  # verbose=0
 
     def load(self, name):
         self.model.load_weights(name)

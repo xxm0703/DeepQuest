@@ -3,7 +3,7 @@ import gym
 from helpers import rgb2gray
 from src.core import DQNAgent
 
-EPISODES = 1000
+EPISODES = 5000
 
 if __name__ == "__main__":
     env = gym.make('Seaquest-v0')
@@ -17,9 +17,9 @@ if __name__ == "__main__":
     for e in range(EPISODES):
         state = env.reset()
         state = rgb2gray(state)
-        for time in range(500):
+        for time in range(1500):
             i += 1
-            # env.render()
+            env.render()
             action = agent.act(state)
             next_state, reward, done, _ = env.step(action)
             reward = reward if not done else -10
@@ -32,7 +32,7 @@ if __name__ == "__main__":
                 print("episode: {}/{}, score: {}, e: {:.2}"
                       .format(e, EPISODES, time, agent.epsilon))
                 break
-            if len(agent.memory) > batch_size:
+            if len(agent.memory) > batch_size and time % 100 == 0:
                 agent.replay(batch_size)
         # if e % 10 == 0:
         #     agent.save("./save/seaquest-dqn.h5")
