@@ -38,7 +38,7 @@ class DQNAgent:
 
         model.add(Dense(24, input_dim=self.state_size, activation='relu'))
         model.add(Dense(24, activation='relu'))
-        model.add(Dense(self.action_size, activation='softmax'))
+        model.add(Dense(self.action_size, activation='linear'))
         model.compile(loss='mse',
                       optimizer=Adam(lr=self.learning_rate))
         return model
@@ -51,6 +51,9 @@ class DQNAgent:
             if self.epsilon > self.epsilon_min:
                 self.epsilon -= self.epsilon_decay
             return random.randrange(self.action_size)
+        return self.decide(state)
+
+    def decide(self, state):
         state = encapsulator(state)
         act_values = self.model.predict(state)
         return np.argmax(act_values[0])  # returns action
