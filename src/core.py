@@ -16,9 +16,9 @@ class DQNAgent:
         self.memory = deque(maxlen=2000)  # decision register
         self.gamma = 0.8  # discount rate
         self.epsilon = 1  # exploration rate
-        self.epsilon_decay = 5e-5
+        self.epsilon_decay = 0.995
         self.epsilon_min = 0.02
-        self.learning_rate = 0.995
+        self.learning_rate = 0.001
         self.model = self._build_model()
 
     def _build_model(self):
@@ -48,8 +48,6 @@ class DQNAgent:
 
     def act(self, state):
         if np.random.rand() <= self.epsilon:
-            if self.epsilon > self.epsilon_min:
-                self.epsilon -= self.epsilon_decay
             return random.randrange(self.action_size)
         return self.decide(state)
 
