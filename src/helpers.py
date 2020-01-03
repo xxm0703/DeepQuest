@@ -6,6 +6,8 @@ __all__ = {
     'encapsulator',
 }
 
+from matplotlib.animation import FuncAnimation
+
 
 def rgb2gray(rgb):
     # A proven formula for converting RGB to Gray-scale
@@ -30,6 +32,9 @@ class LossPlotter:
         self.x_axis = x_axis
         self.y_axis = y_axis
         self.title = title
+        self.fig = plt.figure()
+        self.ax = plt.axes(xlim=(0, 4), ylim=(-2, 2))
+        self.line, = self.ax.plot([], [], lw=3)
         self.setup()
 
     def setup(self):
@@ -37,7 +42,17 @@ class LossPlotter:
         plt.ylabel(self.y_axis)
         plt.xlabel(self.x_axis)
 
-    def plot_loss(self, value):
-        plt.plot(self.STEP, value, 'r+')
-        plt.pause(1)
+    def init_plot(self):
+        self.line.set_data([], [])
+        return self.line
+
+    def start(self):
+        FuncAnimation(self.fig, self.plot_loss, init_func=self.init_plot,
+                      interval=200, blit=True)
         plt.show()
+
+    def plot_loss(self, value):
+        x = value
+        y = np.sin(value * 0.1)
+        self.line.set_data(x, y)
+        return self.line

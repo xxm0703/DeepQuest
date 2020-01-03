@@ -1,3 +1,5 @@
+import time
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -17,13 +19,13 @@ import numpy as np
 # plt.show()
 
 
-x1 = np.linspace(0.0, 5.0)
+x1 = np.linspace(0.0, 10.0)
 x2 = np.linspace(0.0, 2.0)
 y1 = np.cos(2 * np.pi * x1) * np.exp(-x1)
-plt.subplot(2, 1, 1)
+# plt.subplot(2, 1, 1)
 plt.plot(x1, y1, 'o-')
 plt.title('A tale of 2 subplots')
 plt.ylabel('Damped oscillation')
-# plt.pause(0.0001)  # Note this correction
+plt.pause(0.0001)  # Note this correction
 
-plt.show()
+time.sleep(2)

@@ -6,22 +6,22 @@ from keras.layers import Conv2D, MaxPooling2D, Flatten
 from keras.layers import Dropout
 from keras.models import Sequential
 
-from src.helpers import rgb2gray
+from src.helpers import rgb2gray, LossPlotter
 
 
 def cnn3dilated(input_shape):
     model = Sequential(name='cnn3adam')
-    model.add(Conv2D(kernel_size=5, filters=32, input_shape=input_shape, activation='relu'))
+    model.add(Conv2D(kernel_size=7, filters=16, strides=4, input_shape=input_shape, activation='relu'))
     model.add(MaxPooling2D(pool_size=2))
     print(model.output_shape)
 
-    model.add(Conv2D(kernel_size=3, filters=32, activation='relu'))
+    model.add(Conv2D(kernel_size=5, filters=32, strides=2, activation='relu'))
     model.add(MaxPooling2D(pool_size=2))
     print(model.output_shape)
 
-    model.add(Conv2D(kernel_size=3, filters=32, activation='relu'))
-    model.add(MaxPooling2D(pool_size=2))
-    print(model.output_shape)
+    # model.add(Conv2D(kernel_size=3, filters=8, activation='relu'))
+    # model.add(MaxPooling2D(pool_size=2))
+    # print(model.output_shape)
 
     model.add(Dropout(0.2))
     model.add(Flatten())
@@ -56,3 +56,5 @@ def dimensions():
 if __name__ == '__main__':
     dimensions()
     cnn3dilated((210, 160, 1))
+    plot = LossPlotter()
+    plot.start()
