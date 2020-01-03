@@ -1,6 +1,6 @@
 import gym
 
-from helpers import rgb2gray
+from helpers import rgb2gray, LossPlotter
 from src.core import DQNAgent
 
 EPISODES = 1000
@@ -10,7 +10,10 @@ if __name__ == "__main__":
     state_size = env.observation_space.shape
     action_size = env.action_space.n
     agent = DQNAgent(state_size, action_size)
-    agent.load("./save/seaquest-dqn2.h5")
+    plot = LossPlotter()
+    agent.load("./save/seaquest-dqn.h5")
+    K_frames = 4
+    action = 0
 
     done = False
     batch_size = 32
@@ -18,8 +21,9 @@ if __name__ == "__main__":
         state = env.reset()
         state = rgb2gray(state)
         for time in range(1000):
-            env.render()
-            action = agent.act(state)
+            if time % K_frames:
+                action = agent.act(state)
+                # env.render()
             next_state, reward, done, _ = env.step(action)
             reward = reward if not done else -10
 
@@ -29,10 +33,14 @@ if __name__ == "__main__":
 
             state = next_state
             if done:
-                print("episode: {}/{}, score: {}, e: {:.2}"
+                print("episode: {}/{}, score: {}, e: {:.2f}"
                       .format(e, EPISODES, time, agent.epsilon))
                 break
-            if len(agent.memory) > batch_size and time % 10 == 0:
-                agent.replay(batch_size)
+            if len(agent.memory) > batch_size:
+                loss = agent.replay(batch_size)
+                if time % 100 == 0:
+                    plot.plot_loss(loss)
+
         if e % 2 == 0:
-            agent.save("./save/seaquest-dqn2.h5")
+            print(f"Episode: {e}")
+            agent.save("./save/seaquest-dqn.h5")
