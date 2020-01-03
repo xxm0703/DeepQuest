@@ -47,12 +47,12 @@ def gray_scale():
     env.close()
 
 
-def dimentions():
+def dimensions():
     env = gym.make('Seaquest-v0')
     print(f"Input dim: {env.action_space.n}")
     print(f"Output dim: {env.observation_space.shape}")
 
 
 if __name__ == '__main__':
-    dimentions()
+    dimensions()
     cnn3dilated((210, 160, 1))

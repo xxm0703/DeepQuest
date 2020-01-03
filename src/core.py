@@ -14,10 +14,10 @@ class DQNAgent:
         self.state_size = state_size[:2] + (1,)  # no. inputs + 1-channel color
         self.action_size = action_size  # no. outputs
         self.memory = deque(maxlen=2000)  # decision register
-        self.gamma = 0.95  # discount rate
+        self.gamma = 0.8  # discount rate
         self.epsilon = 1  # exploration rate
         self.epsilon_decay = 5e-5
-        self.epsilon_min = 0.02
+        self.epsilon_min = 0.1
         self.learning_rate = 0.001
         self.model = self._build_model()
 
@@ -66,7 +66,7 @@ class DQNAgent:
             if not done:
                 next_state = encapsulator(next_state)
                 a = self.model.predict(next_state)
-                target += self.gamma * np.amax(a[0])
+                target = (2 * reward + self.gamma * np.amax(a[0]))
 
             state = encapsulator(state)
             target_f = self.model.predict(state)

@@ -25,7 +25,9 @@ if __name__ == "__main__":
 
             next_state = rgb2gray(next_state)  # Converting RGB state to gray-scale
 
-            agent.memorize(state, action, reward, next_state, done)  # Remember
+            # agent.memorize(state, action, reward, next_state, done)  # Remember
+            if reward != 0:
+                agent.memorize(state, action, reward, next_state, done)  # Remember
 
             state = next_state
             if done:
