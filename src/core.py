@@ -14,11 +14,11 @@ class DQNAgent:
         self.state_size = state_size[:2] + (1,)  # no. inputs + 1-channel color
         self.action_size = action_size  # no. outputs
         self.memory = deque(maxlen=2000)  # decision register
-        self.gamma = 0.8  # discount rate
+        self.gamma = 0.9  # discount rate
         self.epsilon = 1  # exploration rate
         self.epsilon_decay = 0.995
-        self.epsilon_min = 0.02
-        self.learning_rate = 0.001
+        self.epsilon_min = 0.01
+        self.learning_rate = 0.0003
         self.model = self._build_model()
 
     def _build_model(self):
@@ -58,25 +58,27 @@ class DQNAgent:
 
     def replay(self, batch_size):
         batch = random.sample(self.memory, batch_size)
+        states, targets_f = [], []
 
         for state, action, reward, next_state, done in batch:
             target = reward
             if not done:
-                next_state = encapsulator(next_state)
                 a = self.model.predict(next_state)
                 target = (reward + self.gamma * np.amax(a[0]))
 
-            state = encapsulator(state)
             target_f = self.model.predict(state)
             target_f[0][action] = target
-            history = self.model.fit(state, target_f, verbose=False)  # verbose=0
 
-            loss = history.history['loss'][0]
+            states.append(state[0])
+            targets_f.append(target_f[0])
+        history = self.model.fit(np.array(states), np.array(targets_f), epochs=1, verbose=0)
 
-            if self.epsilon > self.epsilon_min:
-                self.epsilon *= self.epsilon_decay
+        loss = history.history['loss'][0]
 
-            return loss
+        if self.epsilon > self.epsilon_min:
+            self.epsilon *= self.epsilon_decay
+
+        return loss
 
     def load(self, name):
         self.model.load_weights(name)

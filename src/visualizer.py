@@ -1,3 +1,5 @@
+import time
+
 import gym
 
 from helpers import rgb2gray
@@ -10,23 +12,25 @@ if __name__ == "__main__":
     state_size = env.observation_space.shape
     action_size = env.action_space.n
     agent = DQNAgent(state_size, action_size)
-    agent.load("./save/seaquest-dqn2.h5")
+    agent.load("./save/seaquest-dqn4.h5")
     done = False
     batch_size = 32
+    K_frames = 3
+    action = 0
     i = 0
     while True:
         state = env.reset()
         state = rgb2gray(state)
         i += 1
-        for time in range(1500):
+        for t in range(1500):
+            if t % K_frames == 0:
+                action = agent.act(state)
             env.render()
-            action = agent.decide(state)
             next_state, reward, done, _ = env.step(action)
 
-            next_state = rgb2gray(next_state)  # Converting RGB state to gray-scale
-
-            state = next_state
+            state = rgb2gray(next_state)
             if done:
-                print("episode: {}, score: {}, e: {}"
-                      .format(i, time, agent.epsilon))
+                print("episode: {}, score: {}"
+                      .format(i, t))
                 break
+            time.sleep(0.05)
