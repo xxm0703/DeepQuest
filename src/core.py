@@ -14,11 +14,11 @@ class DQNAgent:
         self.state_size = state_size[:2] + (1,)  # no. inputs + 1-channel color
         self.action_size = action_size  # no. outputs
         self.memory = deque(maxlen=2000)  # decision register
-        self.gamma = 0.9  # discount rate
+        self.gamma = 0.8  # discount rate
         self.epsilon = 1  # exploration rate
         self.epsilon_decay = 0.995
         self.epsilon_min = 0.01
-        self.learning_rate = 0.0003
+        self.learning_rate = 0.001
         self.model = self._build_model()
 
     def _build_model(self):
@@ -82,6 +82,7 @@ class DQNAgent:
 
     def load(self, name):
         self.model.load_weights(name)
+        self.epsilon = 0.1
 
     def save(self, name):
         self.model.save_weights(name)

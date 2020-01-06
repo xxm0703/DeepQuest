@@ -12,7 +12,7 @@ if __name__ == "__main__":
     state_size = env.observation_space.shape
     action_size = env.action_space.n
     agent = DQNAgent(state_size, action_size)
-    agent.load("./save/seaquest-dqn4.h5")
+    agent.load("./save/seaquest-dqn-save.h5")
     done = False
     batch_size = 32
     K_frames = 3
@@ -22,10 +22,11 @@ if __name__ == "__main__":
         state = env.reset()
         state = rgb2gray(state)
         i += 1
-        for t in range(1500):
+        for t in range(4000):
             if t % K_frames == 0:
-                action = agent.act(state)
+                action = agent.decide(state)
             env.render()
+
             next_state, reward, done, _ = env.step(action)
 
             state = rgb2gray(next_state)
