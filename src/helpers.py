@@ -4,6 +4,7 @@ import numpy as np
 __all__ = {
     'rgb2gray',
     'encapsulator',
+    'LossPlotter',
 }
 
 
@@ -39,5 +40,5 @@ class LossPlotter:
 
     def plot_loss(self, value):
         plt.plot(self.STEP, value, 'r+')
-        plt.pause(1)
-        plt.show()
+        plt.pause(0.001)
+        self.STEP += 1

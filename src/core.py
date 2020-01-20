@@ -6,7 +6,7 @@ from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten
 from keras.models import Sequential
 from keras.optimizers import Adam
 
-from helpers import encapsulator
+from helpers import encapsulator, LossPlotter
 
 
 class DQNAgent:
@@ -14,12 +14,13 @@ class DQNAgent:
         self.state_size = state_size[:2] + (1,)  # no. inputs + 1-channel color
         self.action_size = action_size  # no. outputs
         self.memory = deque(maxlen=2000)  # decision register
-        self.gamma = 0.8  # discount rate
-        self.epsilon = 1  # exploration rate
+        self.gamma = 0.85  # discount rate
         self.epsilon_decay = 0.995
-        self.epsilon_min = 0.01
+        self.epsilon_min = 0.02
         self.learning_rate = 0.001
+        self.epsilon = 1  # exploration rate
         self.model = self._build_model()
+        self.plotter = LossPlotter()
 
     def _build_model(self):
         # Neural Net for Deep-Q learning Model
@@ -78,11 +79,13 @@ class DQNAgent:
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
 
+        self.plotter.plot_loss(loss)
+
         return loss
 
     def load(self, name):
         self.model.load_weights(name)
-        self.epsilon = 0.1
+        self.epsilon = self.epsilon_min
 
     def save(self, name):
         self.model.save_weights(name)
