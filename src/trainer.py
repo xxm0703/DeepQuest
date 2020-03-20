@@ -2,8 +2,8 @@ import time
 
 import gym
 
+from core import DQNAgent
 from helpers import rgb2gray, LossPlotter, encapsulator
-from src.core import DQNAgent
 
 EPISODES = 1000
 
@@ -13,7 +13,7 @@ if __name__ == "__main__":
     action_size = env.action_space.n
     agent = DQNAgent(state_size, action_size)
     plot = LossPlotter()
-    agent.load("./save/seaquest-dqn4.h5")
+    agent.load("./save/seaquest-dqn3.h5")
     K_frames = 3
     action = 0
     stop_watch = time.time()
@@ -28,7 +28,7 @@ if __name__ == "__main__":
                 action = agent.act(state)
             # env.render()
             next_state, reward, done, _ = env.step(action)
-            reward = reward if not done else -100
+            reward = reward if not done else -50
 
             next_state = rgb2gray(next_state)  # Converting RGB state to gray-scale
 
@@ -49,4 +49,4 @@ if __name__ == "__main__":
 
         if e % 2 == 0:
             print(f"Episode: {e}")
-            agent.save("./save/seaquest-dqn4.h5")
+            agent.save("./save/seaquest-dqn3.h5")
