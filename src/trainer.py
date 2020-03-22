@@ -13,7 +13,7 @@ if __name__ == "__main__":
     action_size = env.action_space.n
     agent = DQNAgent(state_size, action_size)
     plot = LossPlotter()
-    agent.load("./save/seaquest-dqn3.h5")
+    agent.load("./save/seaquest-dqn-res.h5")
     K_frames = 3
     action = 0
     stop_watch = time.time()
@@ -37,11 +37,13 @@ if __name__ == "__main__":
                 agent.memorize(encapsulator(state), action, reward, encapsulator(next_state), done)  # Remember
 
             state = next_state
+
             if done:
                 print("episode: {}/{}, frame: {}, e: {:.2f}"
                       .format(e, EPISODES, frame, agent.epsilon))
                 break
-            if len(agent.memory) > batch_size and frame % 10 == 0:
+
+            if len(agent.memory) > batch_size and frame % 20 == 0:
                 loss = agent.replay(batch_size)
                 print("episode: {}/{}, time: {:.2f}, loss: {:.4f}"
                       .format(e, EPISODES, time.time() - stop_watch, loss))
@@ -49,4 +51,4 @@ if __name__ == "__main__":
 
         if e % 2 == 0:
             print(f"Episode: {e}")
-            agent.save("./save/seaquest-dqn3.h5")
+            agent.save("./save/seaquest-dqn-res.h5")

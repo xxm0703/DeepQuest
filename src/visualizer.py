@@ -12,7 +12,7 @@ if __name__ == "__main__":
     state_size = env.observation_space.shape
     action_size = env.action_space.n
     agent = DQNAgent(state_size, action_size)
-    agent.load("./save/seaquest-dqn-save.h5")
+    agent.load("./save/seaquest-dqn-res.h5")
     done = False
     batch_size = 32
     K_frames = 3

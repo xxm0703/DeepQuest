@@ -1,9 +1,10 @@
 import random
 from collections import deque
 
+import keras
 import numpy as np
-from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten
-from keras.models import Sequential
+from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten, concatenate
+from keras.models import Model
 from keras.optimizers import Adam
 
 from helpers import encapsulator, LossPlotter
@@ -24,22 +25,30 @@ class DQNAgent:
 
     def _build_model(self):
         # Neural Net for Deep-Q learning Model
-        model = Sequential(name='Questor1.0')
-        model.add(Conv2D(kernel_size=5, filters=8, input_shape=self.state_size, activation='relu'))
-        model.add(MaxPooling2D(pool_size=2))
+        input = keras.models.Input(self.state_size, name='Questor1.0')
 
-        model.add(Conv2D(kernel_size=3, filters=16, activation='relu'))
-        model.add(MaxPooling2D(pool_size=2))
+        conv1 = Conv2D(kernel_size=5, filters=8, input_shape=self.state_size, activation='relu')(input)
+        conv1 = MaxPooling2D(pool_size=2)(conv1)
 
-        model.add(Conv2D(kernel_size=3, filters=8, activation='relu'))
-        model.add(MaxPooling2D(pool_size=2))
+        conv2 = Conv2D(kernel_size=3, filters=16, activation='relu')(conv1)
+        conv2 = MaxPooling2D(pool_size=2)(conv2)
 
-        model.add(Dropout(0.2))
-        model.add(Flatten())
+        conv2 = Conv2D(kernel_size=3, filters=8, activation='relu')(conv2)
+        conv2 = MaxPooling2D(pool_size=2)(conv2)
 
-        model.add(Dense(256, input_dim=self.state_size, activation='relu'))
-        model.add(Dense(64, activation='relu'))
-        model.add(Dense(self.action_size, activation='linear'))
+        flat1 = Flatten()(conv1)
+        flat2 = Flatten()(conv2)
+
+        combined = concatenate([flat1, flat2])
+
+        combined = Dropout(0.2)(combined)
+
+        combined = Dense(256, input_dim=self.state_size, activation='relu')(combined)
+        combined = Dense(64, activation='relu')(combined)
+        out = Dense(self.action_size, activation='linear')(combined)
+
+        model = Model(input, out)
+
         model.compile(loss='mse',
                       optimizer=Adam(lr=self.learning_rate))
         return model
