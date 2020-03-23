@@ -2,8 +2,8 @@ import time
 
 import gym
 
+from core import DQNAgent
 from helpers import rgb2gray
-from src.core import DQNAgent
 
 EPISODES = 5000
 

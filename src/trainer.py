@@ -13,7 +13,7 @@ if __name__ == "__main__":
     action_size = env.action_space.n
     agent = DQNAgent(state_size, action_size)
     plot = LossPlotter()
-    agent.load("./save/seaquest-dqn-res.h5")
+    agent.load("./src/save/seaquest-dqn-res.h5")
     K_frames = 3
     action = 0
     stop_watch = time.time()
@@ -51,4 +51,4 @@ if __name__ == "__main__":
 
         if e % 2 == 0:
             print(f"Episode: {e}")
-            agent.save("./save/seaquest-dqn-res.h5")
+            agent.save("./src/save/seaquest-dqn-res.h5")
