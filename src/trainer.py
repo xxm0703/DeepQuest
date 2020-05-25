@@ -3,7 +3,7 @@ import time
 import gym
 
 from core import DQNAgent
-from helpers import rgb2gray, LossPlotter, encapsulator
+from helpers import *
 
 EPISODES = 1000
 
@@ -28,7 +28,7 @@ if __name__ == "__main__":
                 action = agent.act(state)
             # env.render()
             next_state, reward, done, _ = env.step(action)
-            reward = reward if not done else -50
+            reward = reward if not done else -100
 
             next_state = rgb2gray(next_state)  # Converting RGB state to gray-scale
 

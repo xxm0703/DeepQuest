@@ -6,13 +6,15 @@ __all__ = {
     'encapsulator',
     'LossPlotter',
 }
+HEIGHT = 210
+WIDTH = 160
 
 
 def rgb2gray(rgb):
     # A proven formula for converting RGB to Gray-scale
     gray_frame = np.dot(rgb, [0.2989, 0.5870, 0.1140])
     # Put the color in a container, to simulate a color-channel
-    return gray_frame.reshape(210, 160, 1)
+    return gray_frame.reshape(HEIGHT, WIDTH, 1)
 
 
 def encapsulator(frame):

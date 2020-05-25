@@ -35,6 +35,9 @@ class DQNAgent:
         model.add(MaxPooling2D(pool_size=2))
 
         model.add(Dropout(0.2))
+        # print(model.output)
+
+        # Converts 2D matrix to 1D vector
         model.add(Flatten())
 
         model.add(Dense(256, input_dim=self.state_size, activation='relu'))
