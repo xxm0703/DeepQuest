@@ -7,7 +7,7 @@ Run the following in the console/terminal:
 git clone https://github.com/xxm0703/DeepQuest.git
 cd DeepQuest
 pip3 install -r requirements.txt
-python src/visualizer.py
+python3 src/visualizer.py
 ```
 
 Enjoy! Good luck with beating him.
