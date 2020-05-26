@@ -25,7 +25,11 @@ if __name__ == "__main__":
         for t in range(4000):
             if t % K_frames == 0:
                 action = agent.decide(state)
-            env.render()
+            isOpened = env.render()
+
+            if not isOpened:
+                env.close()
+                exit(0)
 
             next_state, reward, done, _ = env.step(action)
 

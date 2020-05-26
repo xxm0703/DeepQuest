@@ -1,3 +1,4 @@
 .idea
-.vscode
+.vscodeq
+venv/
 src/__pycache__/
